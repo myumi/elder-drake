@@ -5,7 +5,7 @@ const itemsByName = new Map()
 // assign the names to their id in a map
 // use the map for querying items instead of api
 // update item maps
-function getItems() {
+export function getItems() {
   axios.get(`${basePath}/${region}/items.json`)
     .then(json => {
       console.log(json)
@@ -26,7 +26,7 @@ function getItems() {
 // search through maps to get item id
 // ping api for item data
 // returns built item string
-export default function searchItem(item) {
+export function searchItem(item) {
   if (!Number.isInteger(item)) {
     item = isShorthand(item)
     if (itemsByName.has(item)) {

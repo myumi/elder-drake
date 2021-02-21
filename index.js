@@ -1,5 +1,7 @@
 const Discord = require(`discord.js`)
 const axios = require(`axios`)
+const path = require(`path`)
+const { searchItem, getItems } = require(path.join(__dirname, `items.js`))
 
 const client = new Discord.Client()
 const prefix = `!` 
@@ -10,8 +12,6 @@ client.on(`ready`, () => {
   // assign all item items to map to have them searched by name 
   getItems()
 })
-
-// make request to get version every 24 hours
 
 // api path
 // display item details
@@ -58,6 +58,8 @@ client.on(`message`, msg => {
       else if (searchItem(msg)) return;
       // if user wants to see ability
       else if (searchAbility(msg)) return;
+      // if nothing found
+      else return notFoundMessage();
     } 
 })
 
@@ -80,5 +82,14 @@ function searchChampion(champName) {
     })
 }
 
+function notFoundMessage() {
+  // send a fun message if no results are found for search
+
+  // 1. (Your team's|The enemy team's) (top lane|ADC|support|jungle|'') (champName) (does league thing). You are (emotion).
+  // 2. You are feeling (emotion) about (your|your team's (champ)|the enemy team's (champ)) (leagueItem).
+  // 3. You miss the (mountain?fire?ocean) soul|cannon minion|baron buff). You are feeling (emotion).
+  // 4. The elder drake (does dragon thing). You look at it (emotion-ly).
+  // No results for your search query! Make sure the spelling is correct.
+}
 
 client.login(process.env.TOKEN);
