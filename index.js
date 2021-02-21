@@ -6,9 +6,6 @@ const prefix = `!`
 const region = `en_US`
 let basePath =  `http://cdn.merakianalytics.com/riot/lol/resources/latest`
 
-const itemsById = new Map()
-const itemsByName = new Map()
-
 client.on(`ready`, () => { 
   // assign all item items to map to have them searched by name 
   getItems()
@@ -26,6 +23,8 @@ client.on(`ready`, () => {
 
 // !elder miss fortune skins
 // !elder skins miss fortune
+// !elder itemName
+// !elder championName
 client.on(`message`, msg => {  
     if (msg.author.bot) return;
 
@@ -81,46 +80,5 @@ function searchChampion(champName) {
     })
 }
 
-// get all items, called every X amount of time?
-// assign the names to their id in a map
-// use the map for querying items instead of api
-// update item maps
-function getItems() {
-  axios.get(`${basePath}/${region}/items.json`)
-    .then(json => {
-      console.log(json)
-      return json.json()
-    })
-    .catch(err => {
-      // send oh fuck message
-      console.error(err)
-    })
-    .then(data => {
-      Object.keys(data).forEach(key => {
-        itemsById.set(data[key].id, data[key].name)
-        itemsByName.set(data[key].name, data[key].id)
-      })
-    })
-}
-
-// search through maps to get item id
-// ping api for item data
-// returns data
-function searchItem(item) {
-  if (!Number.isInteger(item)) {
-    item = isShorthand(item)
-    if (itemsByName.has(item)) {
-      const item = itemsByName[item]
-    } else {
-      // TODO: build no item found message
-    }
-  }
-  // return formatted string of item data
-  axios.get(`${basePath}/${region}/items/${item}.json`)
-    .then(json => json.json())
-    .then(data => {
-      return data
-    })
-}
 
 client.login(process.env.TOKEN);
