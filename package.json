@@ -2,7 +2,7 @@
   "name": "elder-dragon",
   "version": "1.0.0",
   "description": "A discord bot for information about the game League of Legends",
-  "main": "index.js",
+  "main": "bot.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
