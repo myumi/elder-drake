@@ -153,6 +153,7 @@ async function getSkin(champName: string, skinName: string): Promise<MessageEmbe
     });
 }
 
+// get specific chromas
 async function getChroma(champName: string, skin: string, chroma: string): Promise<MessageEmbed> {
   return await makeAPICall(champName)
     .then((json) => {
@@ -232,7 +233,7 @@ async function searchAbility(champName: string, ability: string): Promise<Messag
           value: cleanDescription(item.description),
         }
       });
-      const notesArray = generateShortenedFields('Notes', notes);
+      // const notesArray = generateShortenedFields('Notes', notes);
 
       return makeEmbedMessage({
         title: `${champion}'s ${titleCase(ability)} Ability: ${name}`,
@@ -250,7 +251,7 @@ async function searchAbility(champName: string, ability: string): Promise<Messag
             inline: true,
           },
           ...effectsArray,
-          ...notesArray,
+          // ...notesArray,
         ],
       });
     })
@@ -267,7 +268,7 @@ async function searchAbility(champName: string, ability: string): Promise<Messag
 // need to call .then() on returned promise
 async function makeAPICall(champName: string): Promise<any> {
   return await fetch(`${basePath}/${region}/champions/${champName}.json`)
-    .then(data => data.json());
+    .then((data: { json: () => any }) => data.json());
 }
 
 // normalize name for api
@@ -336,10 +337,12 @@ function generateReducedString(array: Modifiers | null, type: string): string {
 
 // discord has a length limit on messages
 function generateShortenedFields(title: string, message: string): Array<{name: string, value: string}>{
+  // anything past this line is not in-game
+  message = message.split('𝐏𝐄𝐍𝐃𝐈𝐍𝐆 𝐅𝐎𝐑 𝐓𝐄𝐒𝐓 :')[0];
+
   // seperate long fields into seperate fields
   if (message.length > 1024) {
-    // anything past this line is not in-game
-    message = cleanDescription(message);
+    // message = cleanDescription(message);
 
     // make an empty array to push to
     let messages: Array<string> = [];
@@ -364,9 +367,7 @@ function generateShortenedFields(title: string, message: string): Array<{name: s
       }
     }
 
-    // split at 1024 character intervals
-    // const messages: RegExpMatchArray | null = message.match(/.{1,1024}/g);
-    return messages!.map((message: string, index) => {
+    return messages.map((message: string, index) => {
       if (index > 0) {
         return {
           name: `${title} contin.`,
@@ -416,8 +417,10 @@ function cleanDescription(description: string): string {
   return description.trim();
 }
 
-// change "skins -> skin" when displaying a single skin
-// "skins all" command displays all skins (needs confirmation with number of how many messages)
-// set fields to check if longer than 1024 characters, then to split at \n closest to 1024 length
-// do this ^ in loop until all remains are less than 1024 characters
-// make title "title contin"
+// adds bullet point at beginning of string and after new lines
+function addBulletPoints(message: string): string {
+  const bullet = '- ';
+  message = bullet + message;
+  message = message.split('\n').join(`\n${bullet}`);
+  return message;
+}

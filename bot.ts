@@ -28,10 +28,16 @@ client.on('message', (message: Message) => {
       .trim();
 
     // if looking for skins
-    if (content.includes('skins')) {
+    if (content.includes('skins') || content.includes('skin')) {
       // format will be "[champ name] skins [possibly specific skin name]"
       // so we need to split the string from before "skins" and after "skins"
-      const nameArray = content.split('skins');
+      let nameArray: Array<string>;
+      if (content.includes('skins')) {
+        nameArray = content.split('skins');
+      } else {
+        nameArray = content.split('skin');
+      }
+
       getChampionInformation(nameArray[0].trim(), <ChampionQuery>'skins', nameArray[1].trim())
         .then((embed) => {
           return message.reply(embed)
@@ -39,7 +45,7 @@ client.on('message', (message: Message) => {
               return console.error(err);
             })
         });
-    } 
+    }
     // if the query is asking for an ability
     else if (includesAbility(content)) {
       const contentArray = content.split(' ');
@@ -82,10 +88,10 @@ function helpMessage(): MessageEmbed {
       - !elder *[champion name]* skins
       Returns a list of all of the released skins for the specified champion.
 
-      - !elder *[champion name]* skins *[skin name]*
+      - !elder *[champion name]* skin *[skin name]*
       Returns an image and information on the specified champion's specified skin. Includes lore, image, chroma names (if any), and price.
 
-      - !elder *[champion name]* skins *[skin name]* chroma *[chroma name]*
+      - !elder *[champion name]* skin *[skin name]* chroma *[chroma name]*
       Returns an image and lore on the specified champion's specified skin's specified chroma. (Whew!)
 
       - !elder *[item name]*

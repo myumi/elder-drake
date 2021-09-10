@@ -1,5 +1,5 @@
 {
-  "name": "elder-dragon",
+  "name": "elder-drake",
   "version": "1.0.0",
   "description": "A discord bot for information about the game League of Legends",
   "main": "bot.js",
@@ -13,7 +13,7 @@
     "@types/node-fetch": "^2.5.12",
     "axios": "^0.21.1",
     "discord.js": "^12.5.1",
-    "node-fetch": "^2.6.1"
+    "node-fetch": "^2.6.2"
   },
   "devDependencies": {
     "@types/node": "^16.7.4",
