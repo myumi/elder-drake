@@ -1,0 +1,22 @@
+{
+  "name": "elder-dragon",
+  "version": "1.0.0",
+  "description": "A discord bot for information about the game League of Legends",
+  "main": "bot.js",
+  "scripts": {
+    "postinstall": "tsc bot.ts",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Mayumi Kalinowski",
+  "license": "ISC",
+  "dependencies": {
+    "@types/node-fetch": "^2.5.12",
+    "axios": "^0.21.1",
+    "discord.js": "^12.5.1",
+    "node-fetch": "^2.6.1"
+  },
+  "devDependencies": {
+    "@types/node": "^16.7.4",
+    "typescript": "^4.3.5"
+  }
+}
