@@ -7,7 +7,7 @@
     "postinstall": "tsc bot.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "Mayumi Kalinowski",
+  "author": "Mayumi Ohara",
   "license": "ISC",
   "dependencies": {
     "@types/node-fetch": "^2.5.12",

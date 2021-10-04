@@ -1,7 +1,7 @@
 import fetch from 'node-fetch';
 import { MessageEmbed } from 'discord.js';
-import { region, basePath, ChampionQuery, Embed, Modifiers } from '../helpers/constants';
-import { normalizeString, titleCase } from '../helpers/helpers';
+import { region, basePath, ChampionQuery, Embed } from '../helpers/constants';
+import { modifiersReducedString, normalizeDescription, normalizeNameString, normalizePriceProperty, titleCase } from '../helpers/helpers';
 import { makeEmbedMessage, errorMessage } from '../helpers/messageMaker';
 
 export function getChampionInformation(champName: string, type?: ChampionQuery | string, extra?: string): Promise<MessageEmbed> {
@@ -45,6 +45,7 @@ export function freeChampionRotation() {
 }
 
 // get general champion information
+// todo: display list of skins from search skins here
 async function getChampion(champName: string): Promise<MessageEmbed> {
   return await makeAPICall(champName)
     .then((json) => {
@@ -59,28 +60,28 @@ async function getChampion(champName: string): Promise<MessageEmbed> {
         fields: [
           {
             name: 'Roles',
-            value: roles.map((item: string) => normalizeString(item)).join(', '),
+            value: roles.map((item: string) => normalizeNameString(item)).join(', '),
             inline: true,
           },
           {
             name: 'Ranged or Melee?',
-            value: normalizeString(attackType),
+            value: normalizeNameString(attackType),
             inline: true,
           },
           {
             name: 'Adaptive Damage Type',
-            value: normalizeString(adaptiveType),
+            value: normalizeNameString(adaptiveType),
             inline: true,
           },
           {
             name: 'Ability Resource',
-            value: normalizeString(resource),
+            value: normalizeNameString(resource),
             inline: true,
           },
           {
             name: 'Price',
             value: Object.keys(price).map((property) => 
-              price[property] ? `${price[property]} ${handlePriceProperty(property)}` : '')
+              price[property] ? `${price[property]} ${normalizePriceProperty(property)}` : '')
               .join('\n'),
             inline: true,
           },
@@ -129,7 +130,7 @@ async function getSkin(champName: string, skinName: string): Promise<MessageEmbe
         ],
       }
 
-      if (lore || lore !== 'null') {
+      if (!!lore) {
         messageObject = {
           ...messageObject,
           description: lore,
@@ -168,7 +169,7 @@ async function getChroma(champName: string, skin: string, chroma: string): Promi
         image: chromaPath,
       }
 
-      if (lore || lore !== 'null') {
+      if (!!lore) {
         messageObject = {
           ...messageObject,
           description: lore,
@@ -186,6 +187,7 @@ async function getChroma(champName: string, skin: string, chroma: string): Promi
 }
 
 // get list of all skins for champion
+// todo: update this to return a prompt for all skin images
 async function searchSkins(champName: string): Promise<MessageEmbed> {
   return await makeAPICall(champName)
     .then((json) => {
@@ -217,23 +219,22 @@ async function searchAbility(champName: string, ability: string): Promise<Messag
     .then((json) => {
       const { name: champion, resource} = json;
       const abilityObject = json.abilities[ability.toUpperCase().charAt(0)][0];
-      const { name, icon, blurb, effects, cost, cooldown, notes } = abilityObject;
-      const cooldownString = generateReducedString(cooldown, 'seconds');
-      const costString = generateReducedString(cost, normalizeString(resource));
+      const { name, icon, blurb, effects, cost, cooldown } = abilityObject;
+      const cooldownString = modifiersReducedString(cooldown, 'seconds');
+      const costString = modifiersReducedString(cost, normalizeNameString(resource));
       const effectsArray = effects.map((item: { description: string }, index: number) => {
         if (index > 0) {
           return {
             name: '***',
-            value: cleanDescription(item.description),
+            value: normalizeDescription(item.description),
           }
         }
   
         return {
           name: 'Effects:',
-          value: cleanDescription(item.description),
+          value: normalizeDescription(item.description),
         }
       });
-      // const notesArray = generateShortenedFields('Notes', notes);
 
       return makeEmbedMessage({
         title: `${champion}'s ${titleCase(ability)} Ability: ${name}`,
@@ -251,19 +252,22 @@ async function searchAbility(champName: string, ability: string): Promise<Messag
             inline: true,
           },
           ...effectsArray,
-          // ...notesArray,
+          {
+            name: 'Notes:',
+            value: 'The notes often have interesting information but are in no way guarenteed to be readable in this format. If you would like to still see them for this query, reply to this message with :notepad_spiral:.'
+          }
         ],
       });
     })
     .catch((err) => {
       return errorMessage({
         type: 'Having trouble finding anything for that!',
-        message: err,
+        message: `${err}: Did you spell the champion name correctly? Are you searching by ability name instead of key?`,
       });
-    })
+    });
 }
 
-/* Champion.ts Helpers */
+/* Champion.ts-specific Helpers */
 
 // need to call .then() on returned promise
 async function makeAPICall(champName: string): Promise<any> {
@@ -280,7 +284,6 @@ function isWukong(champName: string): string {
     'jarvan': 'JarvanIV',
     'j4': 'JarvanIV',
     'kogmaw': 'KogMaw',
-    'kaisa': 'KaiSa',
     'reksai': 'RekSai',
     'tf': 'TwistedFate',
     'asol': 'AurelionSol',
@@ -305,122 +308,4 @@ function separateSkinAndChroma(extra: string): Array<string> {
   if (chromaArray.length === 2) return [chromaArray[0].trim(), chromaArray[1].trim()];
   // if theres nothing, send nothing
   return ['', '']
-}
-
-// normalize price properties like rp -> RP
-function handlePriceProperty(property: string): string {
-  if (property === 'rp') {
-    return 'RP';
-  } else if (property === 'saleRp') {
-    return 'Sale RP';
-  }
-  return normalizeString(property);
-}
-
-// for certain objects, need to reduce their array of value to something printable
-function generateReducedString(array: Modifiers | null, type: string): string {
-  if (!array) {
-    return 'None';
-  }
-  
-  const values: Array<string> = array.modifiers[0].values;
-
-  return values.reduce((arrayString: string, current: string, index: number) => {
-    if (!arrayString.toString().includes('Level')) {
-      arrayString = `Level 1: ${arrayString} ${type}`;
-    }
-
-    arrayString += `\nLevel ${index + 1}: ${Math.round(parseInt(current))} ${type}`;
-    return arrayString;
-  });
-}
-
-// discord has a length limit on messages
-function generateShortenedFields(title: string, message: string): Array<{name: string, value: string}>{
-  // anything past this line is not in-game
-  message = message.split('𝐏𝐄𝐍𝐃𝐈𝐍𝐆 𝐅𝐎𝐑 𝐓𝐄𝐒𝐓 :')[0];
-
-  // seperate long fields into seperate fields
-  if (message.length > 1024) {
-    // message = cleanDescription(message);
-
-    // make an empty array to push to
-    let messages: Array<string> = [];
-
-    // while we still have length on the original string
-    while (message) {
-      if (message.includes('\n') && message.length > 1024) {
-        // cut off the string at the closest \n (look backwards)
-        const cutOff = message.lastIndexOf('\n', 1024);
-        const subMessage = message.substring(0, cutOff);
-        message = message.substring(cutOff);
-        messages.push(subMessage);
-      } else if (message.length > 1024) {
-        // cut off at  1021 to leave room for elipses
-        const subMessage = message.substring(0, 1021) + '...';
-        message = '...' + message.substring(1024);
-        messages.push(subMessage);
-      } else {
-        // string is short enough, just push it
-        messages.push(message);
-        message = '';
-      }
-    }
-
-    return messages.map((message: string, index) => {
-      if (index > 0) {
-        return {
-          name: `${title} contin.`,
-          value: message,
-        }
-      }
-
-      return {
-        name: `${title}:`,
-        value: message,
-      }
-    });
-  }
-
-  return [{
-    name: title,
-    value: message,
-  }];
-}
-
-// removes extra characters and prettifies some text
-function cleanDescription(description: string): string {
-  // removes excessive new lines
-  // removes "Innate" prepend
-  // removes extra spaces around parathesis and brackets
-  // removes a spaces after and before newlines
-  description = description
-    .split('\n')
-    .filter(line => line.trim())
-    .join('\n')
-    .replace('  ', ' ')
-    .replace(/Innate - /g, '')
-    .replace(/Innate: /g, '')
-    .replace(/\s+\]/g, '] ')
-    .replace(/\[\s+/g, ' [')
-    .replace(/\s+\)/g, ') ')
-    .replace(/\(\s+/g, ' (')
-    .replace('/\n\s+/', '\n')
-    .replace('/\s+\n/', '\n');
-
-  if (description.includes(':')) {
-    const labelArray = description.split(':');
-    labelArray[0] = `***${labelArray[0]}***`;
-    description = labelArray.join(':');
-  }
-
-  return description.trim();
-}
-
-// adds bullet point at beginning of string and after new lines
-function addBulletPoints(message: string): string {
-  const bullet = '- ';
-  message = bullet + message;
-  message = message.split('\n').join(`\n${bullet}`);
-  return message;
 }

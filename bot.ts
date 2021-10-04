@@ -80,22 +80,22 @@ function helpMessage(): MessageEmbed {
     fields: [{
       name: 'Commands:',
       value: `- !elder *[champion name]*
-      Returns general champion info like lore, role, price, splash image, damage types, and soforth.
+Returns general champion info like lore, role, price, splash image, damage types, and soforth.
 
-      - !elder *[champion name]* *[ability code (q, ult, passive, etc)]*
-      Returns the specified champion's ability information, including any details or notes by the developers.
+- !elder *[champion name]* *[ability code (q, ult, passive, etc)]*
+Returns the specified champion's ability information, including any details or notes by the developers.
 
-      - !elder *[champion name]* skins
-      Returns a list of all of the released skins for the specified champion.
+- !elder *[champion name]* skins
+Returns a list of all of the released skins for the specified champion.
 
-      - !elder *[champion name]* skin *[skin name]*
-      Returns an image and information on the specified champion's specified skin. Includes lore, image, chroma names (if any), and price.
+- !elder *[champion name]* skin *[skin name]*
+Returns an image and information on the specified champion's specified skin. Includes lore, image, chroma names (if any), and price.
 
-      - !elder *[champion name]* skin *[skin name]* chroma *[chroma name]*
-      Returns an image and lore on the specified champion's specified skin's specified chroma. (Whew!)
+- !elder *[champion name]* skin *[skin name]* chroma *[chroma name]*
+Returns an image and lore on the specified champion's specified skin's specified chroma. (Whew!)
 
-      - !elder *[item name]*
-      Returns the most updated information on the specified item, including build paths, price, and stats. (Not yet implemented)`
+- !elder *[item name]*
+Returns the most updated information on the specified item, including build paths, price, and stats. (Not yet implemented)`
     }],
     url: 'https://github.com/myumi/elder-drake'
   });

@@ -64,11 +64,15 @@ If it does, open an issue on this repo  with as much information as you can (com
 **FIXES**
 * fix how abilities are parsed from message
 * fix messages with message length problem
+* make notes an optional field
 
 **FEATURES**
 * add item search
 * add help command to show possible commands
 * create a new command to display images of all skins/chromas
+  * make champ info shopw all skins by default
+  * make command "champ name skins" prompt user (react with emoji) if they actually want to see all skins with the amount of messages that will be sent
+  * if prompt accepted, send multiple messages of skin info
 
 **CONSIDER**
 * making the skin/chroma search command more clear
