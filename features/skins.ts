@@ -17,14 +17,14 @@ export async function getChampionSkin(championName: string, skinName: string): P
 
 function makeChampionSkinMessageEmbed(championName: string, skinData: Skin): MessageEmbed {
   championName = normalizeChampionName(championName);
-  const { name, formatName, cost, chromas, lore, uncenteredSplashPath, tilePath } = skinData;
-  const fullSkinName = name !== formatName ? formatName : `${name} ${championName}`;
+  const { name, formatName, cost, chromas, lore, splashPath, tilePath } = skinData;
+  const fullSkinName = formatWeirdSkinName(championName, name, formatName);
   const price = cost === 'special' ? 'Special Event' : `${cost} RP`;
 
   let messageObject: Embed = {
     title: `Skin: ${fullSkinName}`,
     thumbnail: tilePath,
-    image: uncenteredSplashPath,
+    image: splashPath,
     fields: [
       {
         name: 'Price',
@@ -49,6 +49,16 @@ function makeChampionSkinMessageEmbed(championName: string, skinData: Skin): Mes
   }
 
   return constructEmbedMessage(messageObject);
+}
+
+function formatWeirdSkinName(championName: string, skinName: string, formatName: string) {
+  if (skinName.includes(championName)) {
+    return skinName;
+  } else if (skinName !== formatName) {
+    return formatName;
+  } else {
+    return `${skinName} ${championName}`
+  }
 }
 
 // export async function getSkin(skinName: string): Promise<MessageEmbed> {}

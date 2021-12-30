@@ -1,7 +1,6 @@
 export function normalizeChampionName(championName: string): string {
   const nicknames: any = {
     'mundo': 'Mundo',
-    'nunu': 'Nunu & Willump',
     'jarvan': 'Jarvan IV',
     'j4': 'Jarvan IV',
     'kogmaw': 'Kog\'Maw',
@@ -13,43 +12,37 @@ export function normalizeChampionName(championName: string): string {
     'mord': 'Mordekaiser',
     'rhaast': 'Kayn',
     'powder': 'Jinx',
+    'violet': 'Vi',
+    'cait': 'Caitlyn',
+    'ez': 'Ezreal',
+    'cupcake': 'Caitlyn',
     'best boy': 'Kayn',
     'best girl': 'Rek\'Sai',
+    'nunu': 'Nunu & Willump',
   }
 
   if (nicknames.hasOwnProperty(championName)) {
-    return capitalizeWordsInString(nicknames[championName]);
+    return nicknames[championName];
   }
 
   return capitalizeWordsInString(championName);
 }
 
-export function normalizeChampionNameForAPI(champName: string): string {
+export function normalizeChampionNameForAPI(championName: string): string {
   const nicknames: any = {
     'wukong': 'MonkeyKing',
     'mundo': 'DrMundo',
-    'nunu & willump': 'Nunu',
     'jarvan': 'JarvanIV',
     'j4': 'JarvanIV',
-    'kogmaw': 'KogMaw',
-    'reksai': 'RekSai',
-    'tf': 'TwistedFate',
-    'asol': 'AurelionSol',
-    'yi': 'MasterYi',
-    'akechi': 'Kayn',
-    'mord': 'Mordekaiser',
-    'rhaast': 'Kayn',
-    'powder': 'Jinx',
-    'best boy': 'Kayn',
-    'best girl': 'RekSai',
+    'nunu & willump': 'Nunu',
   }
 
-  if (nicknames.hasOwnProperty(champName)) {
-    return nicknames[champName];
+  if (nicknames.hasOwnProperty(championName)) {
+    return nicknames[championName];
   }
 
   // remove symbols and make title-cased
-  return titleCase(champName);
+  return titleCase(championName);
 }
 
 export function normalizePriceProperty(property: string): string {
@@ -63,7 +56,7 @@ export function normalizePriceProperty(property: string): string {
 
 // miss fortune -> MissFortune
 export function titleCase(string: string): string {
-  return string.replace(`'`, '')
+  return string.replace(`'`, ' ')
   .replace(/_/g, ' ')
   .split(' ')
   .map((split) => capitalizeWordsInString(split))

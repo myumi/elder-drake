@@ -1,4 +1,5 @@
 import { MessageEmbed } from 'discord.js';
+import { capitalizeWordsInString } from '../cleanup';
 import { Embed } from '../constants';
 import { championNames } from '../init';
 import { constructEmbedMessage } from './normalMessageGeneration';
@@ -98,7 +99,7 @@ function getEmotionString(): string {
 }
 
 function getRandomChampion(): string {
-  return getRandomElementFromArray(championNames);
+  return capitalizeWordsInString(getRandomElementFromArray(championNames));
 }
 
 function getRandomRole(): string {

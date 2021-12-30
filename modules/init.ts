@@ -4,6 +4,7 @@ import { region, basePath, Chroma, Skin } from '../modules/constants';
 export let championNames: Array<string> = [];
 export let skinNames: Array<string> = [];
 export let chromaNames: Array<string> = [];
+export let championNickNames: Array<string> = ['mundo', 'nunu', 'jarvan', 'j4', 'kogmaw', 'reksai', 'tf', 'asol', 'yi', 'akechi', 'mord', 'rhaast', 'powder', 'best boy', 'best girl', 'violet', 'cait', 'cupcake', 'ez'];
 
 export function init() {
   setChampionNamesAndSkinNamesAndChromaNames();

@@ -10,7 +10,7 @@ export async function getChampion(championName: string): Promise<MessageEmbed> {
     .then((data) => {
       const { name, title, icon, roles, resource, attackType, 
         adaptiveType, price, releaseDate, skins, lore, patchLastChanged } = data;
-      
+
       return constructEmbedMessage({
         title: `${name}, ${title}`,
         thumbnail: icon,

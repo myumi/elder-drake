@@ -3,7 +3,8 @@ import { prefix } from './modules/constants';
 import { getChampion } from './features/champions';
 import { getChampionSkin } from './features/skins';
 import { constructEmbedMessage } from './modules/messages/normalMessageGeneration';
-import { championNames, chromaNames, init, skinNames } from './modules/init';
+import { championNames, championNickNames, chromaNames, init, skinNames } from './modules/init';
+import { normalizeChampionName } from './modules/cleanup';
 
 const client = new Client();
 
@@ -42,6 +43,11 @@ function sendProperMessageResponse(message: Message)  {
   //   return message.reply(helpMessage());
   // }
 
+  const nickname = getConvertedNicknameToName(content);
+  if (nickname) {
+    content += ' ' + nickname;
+  }
+
   const championName = getIncludedName(content, championNames);
   const skinName = getIncludedName(content, skinNames);
   const chromaName = getIncludedName(content, chromaNames);
@@ -55,6 +61,12 @@ function sendProperMessageResponse(message: Message)  {
   if (championName) {
     return sendChampionData(championName, message);
   }
+}
+
+function getConvertedNicknameToName(message: string): string {
+  const nickname = getIncludedName(message, championNickNames);
+
+  return normalizeChampionName(nickname).toLowerCase();
 }
 
 function getIncludedName(message: string, names: Array<string>): string {

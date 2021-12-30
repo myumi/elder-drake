@@ -5,7 +5,10 @@ import { constructErrorMessage } from './messages/errorMessageGeneration';
 
 export async function makeChampionAPICall(championName: string): Promise<any> {
   const normalizedChampionName = normalizeChampionNameForAPI(championName);
-  return await axios.get(`${basePath}/${region}/champions/${normalizedChampionName}.json`);
+  return await axios.get(`${basePath}/${region}/champions/${normalizedChampionName}.json`)
+    .then((data) => {
+      return data.data;
+    });
 }
 
 export async function makeChampionSkinAPICall(championName: string, skinName: string): Promise<any> {
@@ -22,11 +25,8 @@ export async function makeChampionSkinAPICall(championName: string, skinName: st
   });
 }
 
-function ifArrayHaveGivenName(array: Array<Skin> | Array<Chroma>, name: string): Skin | Chroma | boolean {
-  return array.some((item) => {
-    if (item.name.toLowerCase() === name.toLowerCase()) {
-      return item;
-    }
-    return false;
+function ifArrayHaveGivenName(array: Array<Skin> | Array<Chroma>, name: string): Skin | Chroma | undefined {
+  return (array as any[]).find((item: Skin | Chroma) => {
+    return item.name.toLowerCase() === name.toLowerCase()
   });
 }
