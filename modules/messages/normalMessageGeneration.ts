@@ -1,17 +1,17 @@
 import { MessageEmbed } from 'discord.js';
-import { ErrorMessage, Embed } from './constants';
-import generateErrorMessage from './errorMessages';
+import { ErrorMessage, Embed } from '../constants';
+import generateErrorMessage from './errorMessageGeneration';
 
-export function makeEmbedMessage(message: Embed): MessageEmbed {
+export function constructEmbedMessage(message: Embed): MessageEmbed {
   const embedMessage = new MessageEmbed()
     .setColor('#87E4E9')
     .setAuthor('The elder drake speaks...', 'https://cdn.discordapp.com/attachments/651148711115882556/877567670608871494/elder-icon.png');
   
+  // set message properties if we received them
   if (message.title) {
     embedMessage.setTitle(message.title);
   }
   if (message.thumbnail) {
-    console.log(message.thumbnail)
     embedMessage.setThumbnail(message.thumbnail);
   }
   if (message.description) {
@@ -28,16 +28,4 @@ export function makeEmbedMessage(message: Embed): MessageEmbed {
   }
 
   return embedMessage;
-}
-
-export function errorMessage({ type, message }: ErrorMessage): MessageEmbed {
-  // generates a fun, random message
-  const description = generateErrorMessage();
-  const embedMessage: Embed = {
-    title: 'Oh, woof.',
-    description,
-    fields: [{name: type, value: message}],
-  };
-
-  return makeEmbedMessage(embedMessage);
 }

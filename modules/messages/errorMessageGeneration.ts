@@ -1,4 +1,20 @@
-import { getRandomElement } from './helpers';
+import { MessageEmbed } from 'discord.js';
+import { Embed } from '../constants';
+import { championNames } from '../init';
+import { constructEmbedMessage } from './normalMessageGeneration';
+
+export function constructErrorMessage(type: string, message: string): MessageEmbed {
+  const embedMessage: Embed = {
+    title: 'Oh, woof.',
+    description: generateErrorMessage(),
+    fields: [{
+      name: type, 
+      value: message
+    }],
+  };
+
+  return constructEmbedMessage(embedMessage);
+}
 
 export default function generateErrorMessage(): string {
   const errorMessageGenerators = [
@@ -8,6 +24,7 @@ export default function generateErrorMessage(): string {
     generateDragonMessage,
   ];
   const errorString = errorMessageGenerators[Math.floor(Math.random() * errorMessageGenerators.length)]();
+  
   return errorString;
 }
 
@@ -29,16 +46,14 @@ function generateTeamMessage(): string {
     'tries to 1v4... again'
   ];
 
-  return `${getRandomElement([`Your team's`, `The enemy team's`])} ${getRandomRole()} ${getRandomChampion()} ${getRandomElement(leagueThings)}. You feel ${getEmotionString()}.`;
+  return `${getRandomElementFromArray([`Your team's`, `The enemy team's`])} ${getRandomRole()} ${getRandomChampion()} ${getRandomElementFromArray(leagueThings)}. You feel ${getEmotionString()}.`;
 }
 
 function generateItemMessage(): string {
-  // 2. You are feeling (emotion) about (your|your team's (champ)|the enemy team's (champ)) (leagueItem).
-  return `You are feeling ${getEmotionString()} about ${getRandomElement(['your', `your team's (champ)`, `the enemy team's (champ)`])} ${'(leagueItem)'}`;
+  return `You are feeling ${getEmotionString()} about ${getRandomElementFromArray(['your', `your team's ${getRandomChampion()}`, `the enemy team's ${getRandomChampion()}`])} ${'(leagueItem)'}`;
 }
 
 function generateBuffMessage(): string {
-  // 3. You miss the (mountain?fire?ocean?cloud) soul|cannon minion|baron buff). You are feeling (emotion).
   const prizes = [
     'Mountain Soul smite',
     'Fire Soul smite',
@@ -49,7 +64,7 @@ function generateBuffMessage(): string {
     'your ultimate by a pixel',
   ];
 
-  return `You miss the ${getRandomElement(prizes)}. You are feeling ${getEmotionString()}.`;
+  return `You miss the ${getRandomElementFromArray(prizes)}. You are feeling ${getEmotionString()}.`;
 }
 
 function generateDragonMessage(): string {
@@ -60,7 +75,7 @@ function generateDragonMessage(): string {
     'sticks its tongue out at you'
   ]
   // 4. The elder drake (does dragon thing). You look at it (emotion-fully).
-  return `The elder drake ${getRandomElement(dragonThings)}. You look at it with ${getEmotionString()}.`;
+  return `The elder drake ${getRandomElementFromArray(dragonThings)}. You look at it with ${getEmotionString()}.`;
 } 
 
 function getEmotionString(): string {
@@ -79,17 +94,11 @@ function getEmotionString(): string {
     'unmatched', 'life-changing', 'complete and utter', 'extreme', 'vague',
   ]
 
-  return `${getRandomElement(emphasis)} ${getRandomElement(emotions)}`;
+  return `${getRandomElementFromArray(emphasis)} ${getRandomElementFromArray(emotions)}`;
 }
 
 function getRandomChampion(): string {
-  const champNames = [
-    'Teemo', 'Yuumi', 'Bard', 'Neeko',
-    'Ezreal', 'Lux', 'Sona', 'Seraphine',
-    'Sylas', 'Lulu',
-  ];
-
-  return getRandomElement(champNames);
+  return getRandomElementFromArray(championNames);
 }
 
 function getRandomRole(): string {
@@ -97,5 +106,9 @@ function getRandomRole(): string {
     'top lane', 'ADC', 'mid', 'jungle', 'support', ''
   ];
 
-  return getRandomElement(roles);
+  return getRandomElementFromArray(roles);
+}
+
+export function getRandomElementFromArray(array: Array<any>): string {
+  return `${array[Math.floor(Math.random() * array.length)]}`;
 }
