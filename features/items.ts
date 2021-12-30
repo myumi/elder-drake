@@ -1,25 +1,21 @@
-import fetch from 'node-fetch';
-import { region, basePath, ErrorMessage, Embed, Stats, Stat } from '../helpers/constants';
+import axios from 'axios';
+import { region, basePath, ErrorMessage, Embed, Stats, Stat } from '../modules/constants';
 
 let itemsById = new Map();
 let itemsByName = new Map();
 
 // update item maps
 export function getItems(): void {
-  fetch(`${basePath}/${region}/items.json`)
-    .then(data => {
-      console.log('items:', data);
-      return data.json();
-    })
-    .catch(err => {
-      console.error(err);
-    })
+  axios.get(`${basePath}/${region}/items.json`)
     .then(items => {
       // i hate this
       Object.keys(items).forEach((key) => {
         itemsById.set(items[key].id, items[key].name)
         itemsByName.set(items[key].name, items[key].id)
       })
+    })
+    .catch(err => {
+      console.error(err);
     })
 }
 
@@ -117,7 +113,7 @@ function traverseItemStats(stats: Stats): Array<Array<string | number>> {
   return statArray;
 }
 
-export function buildItemMessage(item: string): Embed | Error {
+export function buildItemMessage(item: string): Embed | ErrorMessage {
   const error = {
     type: 'Not Found',
     message: `The item you were searching for wasn't found in the database. Are you sure it's spelled correctly?`,

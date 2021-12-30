@@ -1,8 +1,9 @@
-export const prefix = '!';
+export const prefix = '!elder';
 export const region = 'en-US';
 export const basePath =  'http://cdn.merakianalytics.com/riot/lol/resources/latest';
 
-export type ChampionQuery = 'q' | 'w' | 'e' | 'r' | 'ult' | 'ultimate' | 'p' | 'passive' | 'skins';
+export type AbilityQuery = 'q' | 'w' | 'e' | 'r' | 'ult' | 'ultimate' | 'p' | 'passive';
+
 export interface ErrorMessage {
   type: string,
   message: string
@@ -19,7 +20,7 @@ export interface Embed {
   image?: string;
   thumbnail?: string;
   url?: string;
-}
+};
 
 export interface Stats {
   abilityPower: Stat;
@@ -42,7 +43,7 @@ export interface Stats {
   abilityHaste: Stat;
   omnivamp: Stat;
   tenacity: Stat;
-}
+};
 
 export interface Stat {
   flat: number;
@@ -51,12 +52,48 @@ export interface Stat {
   percentPerLevel: number;
   percentBase: number;
   percentBonus: number;
-}
+};
 
-// they're actually numbers but we use them as strings
-export interface Modifiers {
-  modifiers: Array<{
-    values: Array<string>
-    units: Array<string>
-  }>
-}
+export interface Skin {
+  name: string;
+  id: number;
+  isBase: boolean;
+  availability: string;
+  formatName: string;
+  lootEligible: true;
+  cost: number;
+  sale: number;
+  distribution: string | null;
+  rarity: string;
+  chromas: Array<Chroma>;
+  lore: string;
+  release: string;
+  set: Array<string>;
+  splashPath: string;
+  uncenteredSplashPath: string;
+  tilePath: string;
+  loadScreenPath: string;
+  loadScreenVintagePath: string | null;
+  newEffects: boolean;
+  newAnimations: boolean;
+  newRecall: boolean;
+  newVoice: boolean;
+  newQuotes: boolean;
+  voiceActor: Array<string>;
+  splashArtist: Array<string>;
+};
+
+export interface Chroma {
+  name: string;
+  id: number;
+  chromaPath: string;
+  colors: Array<string>;
+  descriptions: {
+    description: string | null;
+    region: string | null;
+  };
+  rarities: {
+    rarity: number;
+    region: string;
+  }
+};

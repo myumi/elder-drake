@@ -14,11 +14,11 @@ Returns the specified champion's ability information, including any details or n
 * `!elder [champion name] skins`
 
 Returns a list of all of the released skins for the specified champion.
-* `!elder [champion name] skins [skin name]`
+* `!elder [skin name] [champion name]`
 
 Returns an image and information on the specified champion's specified skin. Includes lore, image, chroma names (if any), and price.
 
-* `!elder [champion name] skins [skin name] chroma [chroma name]`
+* `!elder [skin name] [champion name] [chroma name]` OR `!elder [chroma name] [skin name] [champion name]`
 
 Returns an image and lore on the specified champion's specified skin's specified chroma. (Whew!)
 * `!elder [item name]`

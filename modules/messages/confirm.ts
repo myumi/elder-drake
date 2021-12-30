@@ -1,11 +1,12 @@
-/// receives the champion name?
+import { generateShortenedFields, titleCase } from "../cleanup";
+import { AbilityQuery } from "../constants";
+import { makeEmbedMessage } from "./message";
 
-import { generateShortenedFields } from "../features/champions";
-import { titleCase } from "./helpers";
-import { makeEmbedMessage } from "./messageMaker";
 
+/// abilities
 /// message for notes portion
-function confirmedNotesMessage(query: any, ability: string) {
+function confirmedNotesMessage(champName: string, ability: AbilityQuery) {
+  // check stored file
   const { name: champion } = query;
   const abilityObject = query.abilities[ability.toUpperCase().charAt(0)][0];
   const { name, icon, blurb, notes } = abilityObject;
