@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { region, basePath, Chroma, Skin } from '../modules/constants';
 import { capitalizeWordsInString, normalizeChampionNameForAPI } from './cleanup';
-import { constructErrorMessage } from './messages/message';
+import { constructErrorMessage } from './messages/errorMessageGeneration';
 
 export async function makeChampionAPICall(championName: string): Promise<any> {
   const normalizedChampionName = normalizeChampionNameForAPI(championName);
@@ -15,7 +15,7 @@ export async function makeChampionSkinAPICall(championName: string, skinName: st
       const skinData = ifArrayHaveGivenName(data.skins, skinName)
 
       if (!skinData) {
-        return constructErrorMessage('404: Not Found', `${capitalizeWordsInString(championName)} does not have a ${capitalizeWordsInString(skinName)} skin.`);
+        return constructErrorMessage('Not Found', `${capitalizeWordsInString(championName)} does not have a ${capitalizeWordsInString(skinName)} skin.`);
       }
 
       return skinData;

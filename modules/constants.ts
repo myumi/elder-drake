@@ -3,12 +3,10 @@ export const region = 'en-US';
 export const basePath =  'http://cdn.merakianalytics.com/riot/lol/resources/latest';
 
 export type AbilityQuery = 'q' | 'w' | 'e' | 'r' | 'ult' | 'ultimate' | 'p' | 'passive';
-
 export interface ErrorMessage {
   type: string,
   message: string
 };
-
 export interface Embed {
   // color?: string;
   // author?: {name: string, image?: string, url?: string};
@@ -21,7 +19,6 @@ export interface Embed {
   thumbnail?: string;
   url?: string;
 };
-
 export interface Stats {
   abilityPower: Stat;
   armor: Stat;
@@ -44,7 +41,6 @@ export interface Stats {
   omnivamp: Stat;
   tenacity: Stat;
 };
-
 export interface Stat {
   flat: number;
   percent: number;
@@ -53,7 +49,6 @@ export interface Stat {
   percentBase: number;
   percentBonus: number;
 };
-
 export interface Skin {
   name: string;
   id: number;
@@ -61,7 +56,7 @@ export interface Skin {
   availability: string;
   formatName: string;
   lootEligible: true;
-  cost: number;
+  cost: number | string;
   sale: number;
   distribution: string | null;
   rarity: string;
@@ -82,7 +77,6 @@ export interface Skin {
   voiceActor: Array<string>;
   splashArtist: Array<string>;
 };
-
 export interface Chroma {
   name: string;
   id: number;

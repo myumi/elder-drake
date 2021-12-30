@@ -1,8 +1,9 @@
 
 import { MessageEmbed } from 'discord.js';
 import { makeChampionAPICall } from '../modules/api';
-import { normalizeChampionName, normalizeNameString, normalizePriceProperty } from '../modules/cleanup';
-import { constructEmbedMessage, constructErrorMessage } from '../modules/messages/message';
+import { normalizeNameString, normalizePriceProperty } from '../modules/cleanup';
+import { constructErrorMessage } from '../modules/messages/errorMessageGeneration';
+import { constructEmbedMessage } from '../modules/messages/normalMessageGeneration';
 
 export async function getChampion(championName: string): Promise<MessageEmbed> {
   return await makeChampionAPICall(championName)

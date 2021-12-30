@@ -1,6 +1,6 @@
 import { MessageEmbed } from 'discord.js';
 import { ErrorMessage, Embed } from '../constants';
-import generateErrorMessage from './error';
+import generateErrorMessage from './errorMessageGeneration';
 
 export function constructEmbedMessage(message: Embed): MessageEmbed {
   const embedMessage = new MessageEmbed()
@@ -28,17 +28,4 @@ export function constructEmbedMessage(message: Embed): MessageEmbed {
   }
 
   return embedMessage;
-}
-
-export function constructErrorMessage(type: string, message: string): MessageEmbed {
-  const embedMessage: Embed = {
-    title: 'Oh, woof.',
-    description: generateErrorMessage(),
-    fields: [{
-      name: type, 
-      value: message
-    }],
-  };
-
-  return constructEmbedMessage(embedMessage);
 }
