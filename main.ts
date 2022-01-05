@@ -3,8 +3,11 @@ import { prefix } from './modules/constants';
 import { getChampion } from './features/champions';
 import { getChampionSkin } from './features/skins';
 import { constructEmbedMessage } from './modules/messages/normalMessageGeneration';
-import { championNames, championNickNames, chromaNames, init, skinNames } from './modules/init';
+import { championNames, chromaNames, init, skinNames } from './modules/init';
 import { normalizeChampionName } from './modules/cleanup';
+const championNickNames: Array<string> = ['mundo', 'nunu', 'jarvan', 'j4', 'kogmaw', 'reksai', 'tf', 'asol', 'yi', 
+                                          'akechi', 'mord', 'rhaast', 'powder', 'best boy', 'best girl', 'violet', 
+                                          'cait', 'cupcake', 'ez'];
 
 const client = new Client();
 
