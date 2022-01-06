@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { region, basePath, Chroma, Skin } from '../modules/constants';
+import { formatPrestigeSkinNames } from './cleanup';
 
 export let championNames: Array<string> = [];
 export let skinNames: Array<string> = [];
@@ -10,7 +11,7 @@ export function init() {
   setChampionNamesAndSkinNamesAndChromaNames();
 }
 
-export async function setChampionNamesAndSkinNamesAndChromaNames() {
+async function setChampionNamesAndSkinNamesAndChromaNames() {
   await axios.get(`${basePath}/${region}/champions.json`)
     .then(({ data }: { data: any }) => {
       Object.getOwnPropertyNames(data).map(champion => {
@@ -50,13 +51,6 @@ function addToChromaNames(skinArray: Array<Skin>) {
   skinArray.forEach(({ chromas }: { chromas: Array<Chroma> }) => {
     pushNewItemToArrayFromArray(chromas, chromaNames);
   });
-}
-
-function formatPrestigeSkinNames(skinName: string): string {
-  if (skinName.includes('prestige')) {
-    return 'prestige';
-  }
-  return skinName;
 }
 
 function pushNewItemToArrayFromArray(dataArray: Array<Chroma> | Array<Skin>, array: Array<string>) {

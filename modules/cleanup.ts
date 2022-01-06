@@ -96,3 +96,10 @@ export function normalizeNameString(name: string): string {
   
   return name;
 }
+
+export function formatPrestigeSkinNames(skinName: string): string {
+  if (skinName.includes('prestige')) {
+    return 'prestige';
+  }
+  return skinName;
+}

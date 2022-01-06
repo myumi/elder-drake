@@ -1,7 +1,7 @@
 import { MessageEmbed } from 'discord.js';
 import { Embed, Skin } from '../modules/constants';
 import { makeChampionSkinAPICall } from '../modules/api';
-import { normalizeChampionName } from '../modules/cleanup';
+import { formatPrestigeSkinNames, normalizeChampionName } from '../modules/cleanup';
 import { skinToChampionMap } from '../modules/init';
 import { constructEmbedMessage } from '../modules/messages/normalMessageGeneration';
 import { constructErrorMessage, getRandomElementFromArray } from '../modules/messages/errorMessageGeneration';
@@ -21,8 +21,7 @@ export async function getSkin(skinName: string): Promise<MessageEmbed> {
     const randomChampion = getRandomElementFromArray(skinToChampionMap.get(skinName)!);
     return await makeChampionSkinAPICall(randomChampion, skinName)
       .then((skinData) => {
-        console.log(skinData);
-        return makeSkinMessageEmbed(skinData);
+        return makeSkinMessageEmbed(skinData, skinName);
       })
       .catch((err) => {
         return constructErrorMessage('Having trouble finding that particular skin!', err);
@@ -69,7 +68,8 @@ function makeChampionSkinMessageEmbed(championName: string, skinData: Skin): Mes
   return constructEmbedMessage(messageObject);
 }
 
-function makeSkinMessageEmbed(skinData: Skin): MessageEmbed {
+function makeSkinMessageEmbed(skinData: Skin, skinName: string): MessageEmbed {
+  skinName = formatPrestigeSkinNames(skinName.toLowerCase());
   const { name, splashPath, tilePath } = skinData;
   let messageObject: Embed = {
     title: `Skin Line: ${name}`,
@@ -77,7 +77,7 @@ function makeSkinMessageEmbed(skinData: Skin): MessageEmbed {
     image: splashPath,
     fields: [{
       name: 'Champions with this skin line:',
-      value: skinToChampionMap.get(name)!.join(', '),
+      value: skinToChampionMap.get(skinName)!.join(', '),
     }]
   }
 
