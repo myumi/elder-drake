@@ -2,8 +2,9 @@ import { MessageEmbed } from 'discord.js';
 import { Embed, Skin } from '../modules/constants';
 import { makeChampionSkinAPICall } from '../modules/api';
 import { normalizeChampionName } from '../modules/cleanup';
+import { skinToChampionMap } from '../modules/init';
 import { constructEmbedMessage } from '../modules/messages/normalMessageGeneration';
-import { constructErrorMessage } from '../modules/messages/errorMessageGeneration';
+import { constructErrorMessage, getRandomElementFromArray } from '../modules/messages/errorMessageGeneration';
 
 export async function getChampionSkin(championName: string, skinName: string): Promise<MessageEmbed> {
   return await makeChampionSkinAPICall(championName, skinName)
@@ -13,6 +14,23 @@ export async function getChampionSkin(championName: string, skinName: string): P
     .catch((err) => {
       return constructErrorMessage('Having trouble finding that particular skin!', err);
     });
+}
+
+export async function getSkin(skinName: string): Promise<MessageEmbed> {
+  if (skinToChampionMap.has(skinName)) {
+    const randomChampion = getRandomElementFromArray(skinToChampionMap.get(skinName)!);
+    return await makeChampionSkinAPICall(randomChampion, skinName)
+      .then((skinData) => {
+        console.log(skinData);
+        return makeSkinMessageEmbed(skinData);
+      })
+      .catch((err) => {
+        return constructErrorMessage('Having trouble finding that particular skin!', err);
+    });
+  } else {
+    return constructErrorMessage('Having trouble finding that particular skin!', 'Did you spell the skin name correctly?');
+  }
+
 }
 
 function makeChampionSkinMessageEmbed(championName: string, skinData: Skin): MessageEmbed {
@@ -51,6 +69,21 @@ function makeChampionSkinMessageEmbed(championName: string, skinData: Skin): Mes
   return constructEmbedMessage(messageObject);
 }
 
+function makeSkinMessageEmbed(skinData: Skin): MessageEmbed {
+  const { name, splashPath, tilePath } = skinData;
+  let messageObject: Embed = {
+    title: `Skin Line: ${name}`,
+    thumbnail: tilePath,
+    image: splashPath,
+    fields: [{
+      name: 'Champions with this skin line:',
+      value: skinToChampionMap.get(name)!.join(', '),
+    }]
+  }
+
+  return constructEmbedMessage(messageObject);
+}
+
 function formatWeirdSkinName(championName: string, skinName: string, formatName: string) {
   if (skinName.includes(championName)) {
     return skinName;
@@ -60,5 +93,3 @@ function formatWeirdSkinName(championName: string, skinName: string, formatName:
     return `${skinName} ${championName}`
   }
 }
-
-// export async function getSkin(skinName: string): Promise<MessageEmbed> {}

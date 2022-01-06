@@ -4,17 +4,18 @@ import { region, basePath, Chroma, Skin } from '../modules/constants';
 export let championNames: Array<string> = [];
 export let skinNames: Array<string> = [];
 export let chromaNames: Array<string> = [];
-export let championNickNames: Array<string> = ['mundo', 'nunu', 'jarvan', 'j4', 'kogmaw', 'reksai', 'tf', 'asol', 'yi', 'akechi', 'mord', 'rhaast', 'powder', 'best boy', 'best girl', 'violet', 'cait', 'cupcake', 'ez'];
+export let skinToChampionMap: Map<string, Array<string>> = new Map();
 
 export function init() {
   setChampionNamesAndSkinNamesAndChromaNames();
 }
 
-async function setChampionNamesAndSkinNamesAndChromaNames() {
-  axios.get(`${basePath}/${region}/champions.json`)
+export async function setChampionNamesAndSkinNamesAndChromaNames() {
+  await axios.get(`${basePath}/${region}/champions.json`)
     .then(({ data }: { data: any }) => {
       Object.getOwnPropertyNames(data).map(champion => {
         addToChampionNames(data[champion].name);
+        addChampionsToSkinMap(data[champion].name, data[champion].skins);
         addToSkinNames(data[champion].skins);
         addToChromaNames(data[champion].skins);
       });
@@ -26,17 +27,39 @@ function addToChampionNames(championName: string) {
   championNames.push(championName);
 }
 
+function addChampionsToSkinMap(championName: string, skinArray: Array<Skin>) {
+  skinArray.forEach(({ name: skinName }: { name: string }) => {
+    if (skinName !== 'Original') {
+      skinName = formatPrestigeSkinNames(skinName.toLowerCase());
+      if (skinToChampionMap.has(skinName)) {
+        let skinArray = skinToChampionMap.get(skinName)!;
+        pushNewItemToArray(championName, skinArray);
+        skinToChampionMap.set(skinName, skinArray);
+      } else {
+        skinToChampionMap.set(skinName, [championName]);
+      }
+    }
+  });
+}
+
 function addToSkinNames(skinArray: Array<Skin>) {
-  pushNewItemToArray(skinArray, skinNames);
+  pushNewItemToArrayFromArray(skinArray, skinNames);
 }
 
 function addToChromaNames(skinArray: Array<Skin>) {
   skinArray.forEach(({ chromas }: { chromas: Array<Chroma> }) => {
-    pushNewItemToArray(chromas, chromaNames);
+    pushNewItemToArrayFromArray(chromas, chromaNames);
   });
 }
 
-function pushNewItemToArray(dataArray: Array<Chroma> | Array<Skin>, array: Array<string>) {
+function formatPrestigeSkinNames(skinName: string): string {
+  if (skinName.includes('prestige')) {
+    return 'prestige';
+  }
+  return skinName;
+}
+
+function pushNewItemToArrayFromArray(dataArray: Array<Chroma> | Array<Skin>, array: Array<string>) {
   dataArray.forEach((item) => {
     if (item !== null && item.name) {
       const itemName = item.name.toLowerCase();
@@ -45,4 +68,12 @@ function pushNewItemToArray(dataArray: Array<Chroma> | Array<Skin>, array: Array
       }
     }
   });
+}
+
+function pushNewItemToArray(item: string, array: Array<string>) {
+  if (array.includes(item)) {
+    return;
+  }
+
+  array.push(item);
 }
