@@ -1,7 +1,7 @@
 import { MessageEmbed } from 'discord.js';
 import { Embed, Skin } from '../modules/constants';
 import { makeChampionSkinAPICall } from '../modules/api';
-import { formatPrestigeSkinNames, normalizeChampionName } from '../modules/cleanup';
+import { normalizeChampionName } from '../modules/cleanup';
 import { skinToChampionMap } from '../modules/init';
 import { constructEmbedMessage } from '../modules/messages/normalMessageGeneration';
 import { constructErrorMessage, getRandomElementFromArray } from '../modules/messages/errorMessageGeneration';
@@ -69,14 +69,13 @@ function makeChampionSkinMessageEmbed(championName: string, skinData: Skin): Mes
 }
 
 function makeSkinMessageEmbed(skinData: Skin, skinName: string): MessageEmbed {
-  skinName = formatPrestigeSkinNames(skinName.toLowerCase());
   const { name, splashPath, tilePath } = skinData;
   let messageObject: Embed = {
     title: `Skin Line: ${name}`,
     thumbnail: tilePath,
     image: splashPath,
     fields: [{
-      name: 'Champions with this skin line:',
+      name: 'Champions Within This Skin Line:',
       value: skinToChampionMap.get(skinName)!.join(', '),
     }]
   }

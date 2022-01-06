@@ -1,11 +1,11 @@
 import axios from 'axios';
 import { region, basePath, Chroma, Skin } from '../modules/constants';
-import { formatPrestigeSkinNames } from './cleanup';
 
 export let championNames: Array<string> = [];
-export let skinNames: Array<string> = [];
+export let skinNames: Array<string> = ['prestige'];
 export let chromaNames: Array<string> = [];
 export let skinToChampionMap: Map<string, Array<string>> = new Map();
+skinToChampionMap.set('prestige', [])
 
 export function init() {
   setChampionNamesAndSkinNamesAndChromaNames();
@@ -30,12 +30,17 @@ function addToChampionNames(championName: string) {
 
 function addChampionsToSkinMap(championName: string, skinArray: Array<Skin>) {
   skinArray.forEach(({ name: skinName }: { name: string }) => {
-    if (skinName !== 'Original') {
-      skinName = formatPrestigeSkinNames(skinName.toLowerCase());
+    skinName = skinName.toLowerCase();
+    
+    if (skinName !== 'original') {
+      const isPrestige = skinName.includes('prestige');
+
+      if (isPrestige) {
+        setNewItemToSkinMap(championName, 'prestige');
+      }
+
       if (skinToChampionMap.has(skinName)) {
-        let skinArray = skinToChampionMap.get(skinName)!;
-        pushNewItemToArray(championName, skinArray);
-        skinToChampionMap.set(skinName, skinArray);
+        setNewItemToSkinMap(championName, skinName);
       } else {
         skinToChampionMap.set(skinName, [championName]);
       }
@@ -70,4 +75,10 @@ function pushNewItemToArray(item: string, array: Array<string>) {
   }
 
   array.push(item);
+}
+
+function setNewItemToSkinMap(championName: string, skinName: string) {
+  let skinArray = skinToChampionMap.get(skinName)!;
+  pushNewItemToArray(championName, skinArray);
+  skinToChampionMap.set(skinName, skinArray);
 }
