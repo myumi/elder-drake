@@ -78,7 +78,7 @@ function getConvertedNicknameToName(message: string): string {
 function getIncludedName(message: string, names: Array<string>): string {
   let nameIncluded = '';
   names.some((name: string) => {
-    if (message.includes(name)) {
+    if (message.includes(` ${name}`)) {
       nameIncluded = name;
     }
     return nameIncluded;
