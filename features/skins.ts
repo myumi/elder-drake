@@ -19,9 +19,9 @@ export async function getChampionSkin(championName: string, skinName: string): P
 export async function getSkin(skinName: string): Promise<MessageEmbed> {
   if (skinToChampionMap.has(skinName)) {
     const randomChampion = getRandomElementFromArray(skinToChampionMap.get(skinName)!);
-
     return await makeChampionSkinAPICall(randomChampion, skinName)
       .then((skinData) => {
+        console.log(skinData);
         return makeSkinMessageEmbed(skinData);
       })
       .catch((err) => {

@@ -1,7 +1,7 @@
 import { Client, Message, MessageAdditions, MessageEmbed, MessageOptions } from 'discord.js';
 import { prefix } from './modules/constants';
 import { getChampion } from './features/champions';
-import { getChampionSkin } from './features/skins';
+import { getChampionSkin, getSkin } from './features/skins';
 import { constructEmbedMessage } from './modules/messages/normalMessageGeneration';
 import { championNames, chromaNames, init, skinNames } from './modules/init';
 import { normalizeChampionName } from './modules/cleanup';
@@ -58,11 +58,14 @@ function sendProperMessageResponse(message: Message)  {
   if (chromaName && skinName && championName) {
     return sendChampionSkinChromaData(championName, skinName, chromaName, message);
   }
-  if (skinName && championName) {
+  else if (skinName && championName) {
     return sendChampionSkinData(championName, skinName, message);
   }
-  if (championName) {
+  else if (championName) {
     return sendChampionData(championName, message);
+  }
+  else if (skinName) {
+    return sendSkinData(skinName, message);
   }
 }
 
@@ -91,9 +94,22 @@ function sendChampionData(championName: string, message: Message): Promise<void 
           return console.error('when sending embedded message for champion data', err);
         });
     })
+    .catch((err) => {
+      return console.error('when getting the embedded message for champion data', err)
+    });
+}
+
+function sendSkinData(skinName: string, message: Message): Promise<void | Message>  {
+  return getSkin(skinName)
+    .then((embed: MessageEmbed) => {
+      return message.reply(embed)
       .catch((err) => {
-        return console.error('when getting the embedded message for champion data', err)
+        return console.error('when sending embedded message for skin data', err);
       });
+    })
+    .catch((err) => {
+      return console.error('when getting the embedded message for skin data', err)
+    });
 }
 
 function sendChampionSkinData(championName: string, skinName: string, message: Message): Promise<void | Message>  {

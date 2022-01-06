@@ -10,8 +10,8 @@ export function init() {
   setChampionNamesAndSkinNamesAndChromaNames();
 }
 
-async function setChampionNamesAndSkinNamesAndChromaNames() {
-  axios.get(`${basePath}/${region}/champions.json`)
+export async function setChampionNamesAndSkinNamesAndChromaNames() {
+  await axios.get(`${basePath}/${region}/champions.json`)
     .then(({ data }: { data: any }) => {
       Object.getOwnPropertyNames(data).map(champion => {
         addToChampionNames(data[champion].name);
@@ -29,13 +29,15 @@ function addToChampionNames(championName: string) {
 
 function addChampionsToSkinMap(championName: string, skinArray: Array<Skin>) {
   skinArray.forEach(({ name: skinName }: { name: string }) => {
-    skinName = formatPrestigeSkinNames(skinName.toLowerCase());
-    if (skinToChampionMap.has(skinName)) {
-      let skinArray = skinToChampionMap.get(skinName)!;
-      pushNewItemToArray(championName, skinArray);
-      skinToChampionMap.set(skinName, skinArray);
-    } else {
-      skinToChampionMap.set(skinName, [championName]);
+    if (skinName !== 'Original') {
+      skinName = formatPrestigeSkinNames(skinName.toLowerCase());
+      if (skinToChampionMap.has(skinName)) {
+        let skinArray = skinToChampionMap.get(skinName)!;
+        pushNewItemToArray(championName, skinArray);
+        skinToChampionMap.set(skinName, skinArray);
+      } else {
+        skinToChampionMap.set(skinName, [championName]);
+      }
     }
   });
 }
