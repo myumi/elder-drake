@@ -5,6 +5,7 @@ import { getChampionSkin, getSkin } from './features/skins';
 import { constructEmbedMessage } from './modules/messages/normalMessageGeneration';
 import { championNames, chromaNames, init, skinNames } from './modules/init';
 import { normalizeChampionName } from './modules/cleanup';
+import { constructErrorMessage } from './modules/messages/errorMessageGeneration';
 const championNickNames: Array<string> = ['mundo', 'nunu', 'jarvan', 'j4', 'kogmaw', 'reksai', 'tf', 'asol', 'yi', 
                                           'akechi', 'mord', 'rhaast', 'powder', 'best boy', 'best girl', 'violet', 
                                           'cait', 'cupcake', 'ez'];
@@ -48,7 +49,7 @@ function sendProperMessageResponse(message: Message)  {
 
   const nickname = getConvertedNicknameToName(content);
   if (nickname) {
-    content += ' ' + nickname;
+    content += ` ${nickname}`;
   }
 
   const championName = getIncludedName(content, championNames);
@@ -66,6 +67,9 @@ function sendProperMessageResponse(message: Message)  {
   }
   else if (skinName) {
     return sendSkinData(skinName, message);
+  }
+  else {
+    return sendErrorMessage(message);
   }
 }
 
@@ -136,6 +140,10 @@ function sendChampionSkinChromaData(championName: string, skinName: string, chro
     .catch((err) => {
       return console.error('when getting the embedded message for champion data', err)
     });
+}
+
+function sendErrorMessage(message: Message): Promise<Message> {
+  return message.reply(constructErrorMessage('Not Found', 'Your message did not match any of our queries, or did not contain any known key words.'));
 }
 
 function sendHelpMessage(): MessageEmbed {

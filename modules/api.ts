@@ -1,7 +1,6 @@
 import axios from 'axios';
 import { region, basePath, Chroma, Skin } from '../modules/constants';
 import { capitalizeWordsInString, normalizeChampionNameForAPI } from './cleanup';
-import { skinToChampionMap } from './init';
 import { constructErrorMessage } from './messages/errorMessageGeneration';
 
 export async function makeChampionAPICall(championName: string): Promise<any> {
