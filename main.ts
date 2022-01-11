@@ -3,7 +3,7 @@ import { prefix } from './modules/constants';
 import { getChampion } from './features/champions';
 import { getChampionSkin, getSkin } from './features/skins';
 import { constructEmbedMessage } from './modules/messages/normalMessageGeneration';
-import { championNames, chromaNames, init, skinNames } from './modules/init';
+import { championNames, chromaNames, setChampionNamesAndSkinNamesAndChromaNames, skinNames } from './modules/init';
 import { normalizeChampionName } from './modules/cleanup';
 import { constructErrorMessage } from './modules/messages/errorMessageGeneration';
 const championNickNames: Array<string> = ['mundo', 'nunu', 'jarvan', 'j4', 'kogmaw', 'reksai', 'tf', 'asol', 'yi', 
@@ -13,7 +13,7 @@ const championNickNames: Array<string> = ['mundo', 'nunu', 'jarvan', 'j4', 'kogm
 const client = new Client();
 
 client.on('ready', () => {
-  init();
+  setChampionNamesAndSkinNamesAndChromaNames();
   console.log('The elder drake is awake!');
 });
 
@@ -79,7 +79,7 @@ function getConvertedNicknameToName(message: string): string {
   return normalizeChampionName(nickname).toLowerCase();
 }
 
-function getIncludedName(message: string, names: Array<string>): string {
+function getIncludedName(message: string, names: Array<string>): string { 
   let nameIncluded = '';
   names.some((name: string) => {
     if (message.includes(` ${name}`)) {
