@@ -91,7 +91,7 @@ function getConvertedNicknameToName(message: string): string {
   return normalizeChampionName(nickname).toLowerCase();
 }
 
-function getIncludedName(message: string, names: Array<string>): string {
+function getIncludedName(message: string, names: Array<string>): string { 
   let nameIncluded = '';
   names.some((name: string) => {
     if (message.includes(` ${name}`)) {

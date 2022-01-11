@@ -7,7 +7,7 @@ export let championNames: Array<string> = [];
 export let skinNames: Array<string> = ['prestige'];
 export let chromaNames: Array<string> = [];
 export let skinToChampionMap: Map<string, Array<string>> = new Map();
-skinToChampionMap.set('prestige', [])
+// skinToChampionMap.set('prestige', [])
 
 export function init() {
   setChampionNamesAndSkinNamesAndChromaNames();
@@ -47,13 +47,13 @@ function addToChampionNames(championName: string) {
 function addChampionsToSkinMap(championName: string, skinArray: Array<Skin>) {
   skinArray.forEach(({ name: skinName }: { name: string }) => {
     skinName = skinName.toLowerCase();
-    
-    if (skinName !== 'original') {
-      const isPrestige = skinName.includes('prestige');
 
-      if (isPrestige) {
-        setNewItemToSkinMap(championName, 'prestige');
-      }
+    if (skinName !== 'original') {
+      // const isPrestige = skinName.includes('prestige');
+
+      // if (isPrestige) {
+      //   setNewItemToSkinMap(championName, 'prestige');
+      // }
 
       if (skinToChampionMap.has(skinName)) {
         setNewItemToSkinMap(championName, skinName);
