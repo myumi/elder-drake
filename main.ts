@@ -2,10 +2,13 @@ import { Client, Message, MessageAdditions, MessageEmbed, MessageOptions } from 
 import { prefix } from './modules/constants';
 import { getChampion } from './features/champions';
 import { getChampionSkin, getSkin } from './features/skins';
+import { getItem } from './features/items';
 import { constructEmbedMessage } from './modules/messages/normalMessageGeneration';
-import { championNames, chromaNames, init, skinNames } from './modules/init';
+import { championNames, chromaNames, init, skinNames, itemNames } from './modules/init';
 import { normalizeChampionName } from './modules/cleanup';
 import { constructErrorMessage } from './modules/messages/errorMessageGeneration';
+import { normalizeItemName } from './modules/cleanup';
+
 const championNickNames: Array<string> = ['mundo', 'nunu', 'jarvan', 'j4', 'kogmaw', 'reksai', 'tf', 'asol', 'yi', 
                                           'akechi', 'mord', 'rhaast', 'powder', 'best boy', 'best girl', 'violet', 
                                           'cait', 'cupcake', 'ez'];
@@ -52,9 +55,15 @@ function sendProperMessageResponse(message: Message)  {
     content += ` ${nickname}`;
   }
 
+  const itemNickname = normalizeItemName(content);
+  if (itemNickname) {
+    content += ` ${itemNickname}`;
+  }
+
   const championName = getIncludedName(content, championNames);
   const skinName = getIncludedName(content, skinNames);
   const chromaName = getIncludedName(content, chromaNames);
+  const itemName = getIncludedName(content, itemNames)
 
   if (chromaName && skinName && championName) {
     return sendChampionSkinChromaData(championName, skinName, chromaName, message);
@@ -67,6 +76,9 @@ function sendProperMessageResponse(message: Message)  {
   }
   else if (skinName) {
     return sendSkinData(skinName, message);
+  }
+  else if (itemName) {
+    return sendItemData(itemName, message);
   }
   else {
     return sendErrorMessage(message);
@@ -139,6 +151,19 @@ function sendChampionSkinChromaData(championName: string, skinName: string, chro
   })
     .catch((err) => {
       return console.error('when getting the embedded message for champion data', err)
+    });
+}
+
+function sendItemData(itemName: string, message: Message): Promise<void | Message> {
+  return getItem(itemName)
+    .then((embed: MessageEmbed) => {
+      return message.reply(embed)
+        .catch((err) => {
+          return console.error('when sending embedded message for item data', err);
+        });
+    })
+    .catch((err) => {
+      return console.error('when getting the embedded message for item data', err)
     });
 }
 

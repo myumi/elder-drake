@@ -1,6 +1,8 @@
 import axios from 'axios';
 import { region, basePath, Chroma, Skin } from '../modules/constants';
-
+import { simplifyName } from './cleanup';
+export let itemMap = new Map<string, string>();
+export let itemNames: Array<string> = [];
 export let championNames: Array<string> = [];
 export let skinNames: Array<string> = ['prestige'];
 export let chromaNames: Array<string> = [];
@@ -21,6 +23,19 @@ async function setChampionNamesAndSkinNamesAndChromaNames() {
         addToChromaNames(data[champion].skins);
       });
     });
+}
+
+//Sets item map for getting item ID from item name. Should be included in init() in init.ts
+export async function setItemNames() {
+  await axios.get(`${basePath}/${region}/items.json`)
+      .then(resp => {
+          for (var id in resp.data) {
+              let itemName = simplifyName(resp.data[id].name.replace(/'/,''));
+              itemMap.set(itemName, id);
+              itemNames.push(itemName);
+          }
+      }
+  )
 }
 
 function addToChampionNames(championName: string) {
