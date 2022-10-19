@@ -2,7 +2,7 @@ import { Client, Message, MessageAdditions, MessageEmbed, MessageOptions } from 
 import { prefix } from './modules/constants';
 import { getChampion } from './features/champions';
 import { getChampionSkin, getSkin } from './features/skins';
-import { fetchItem } from './features/items';
+import { getItem } from './features/items';
 import { constructEmbedMessage } from './modules/messages/normalMessageGeneration';
 import { championNames, chromaNames, init, skinNames, itemNames } from './modules/init';
 import { normalizeChampionName } from './modules/cleanup';
@@ -150,20 +150,20 @@ function sendChampionSkinChromaData(championName: string, skinName: string, chro
       });
   })
     .catch((err) => {
-      return console.error('When getting the embedded message for champion data', err)
+      return console.error('when getting the embedded message for champion data', err)
     });
 }
 
 function sendItemData(itemName: string, message: Message): Promise<void | Message> {
-  return fetchItem(itemName)
+  return getItem(itemName)
     .then((embed: MessageEmbed) => {
       return message.reply(embed)
         .catch((err) => {
-          return console.error('When sending embedded message for item data', err);
+          return console.error('when sending embedded message for item data', err);
         });
     })
     .catch((err) => {
-      return console.error('When getting the embedded message for item data', err)
+      return console.error('when getting the embedded message for item data', err)
     });
 }
 
