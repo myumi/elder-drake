@@ -97,13 +97,13 @@ export function normalizeNameString(name: string): string {
   return name;
 }
 
-//Simplify any name by lowercasing and removing apostrophes
+// Simplify any name by lowercasing and removing apostrophes
 export function simplifyName(itemName: string) {
   let simpleItemName = itemName.toLowerCase();
   return simpleItemName.replace(/'/,'');
 }
 
-//Normalize Stat name for printing
+// Normalize stat name for printing
 export function normalizeStatName(statName: string): string {
   let normalizedStat = statName.split(/(?=[A-Z])/).join(" ");
   normalizedStat = (capitalizeWordsInString(normalizedStat));

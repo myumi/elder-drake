@@ -26,12 +26,12 @@ async function setChampionNamesAndSkinNamesAndChromaNames() {
     });
 }
 
-//Sets item map for getting item ID from item name. Should be included in init() in init.ts
+// Sets item map for getting item ID from item name.
 export async function setItemNames() {
   await axios.get(`${basePath}/${region}/items.json`)
-      .then(resp => {
-          for (var id in resp.data) {
-              let itemName = simplifyName(resp.data[id].name.replace(/'/,''));
+      .then(res => {
+          for (let id in res.data) {
+              let itemName = simplifyName(res.data[id].name.replace(/'/,''));
               itemMap.set(itemName, id);
               itemNames.push(itemName);
           }

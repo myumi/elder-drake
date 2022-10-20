@@ -2,7 +2,7 @@ import { Client, Message, MessageAdditions, MessageEmbed, MessageOptions } from 
 import { prefix } from './modules/constants';
 import { getChampion } from './features/champions';
 import { getChampionSkin, getSkin } from './features/skins';
-import { getItem } from './features/items';
+import { fetchItem } from './features/items';
 import { constructEmbedMessage } from './modules/messages/normalMessageGeneration';
 import { championNames, chromaNames, init, skinNames, itemNames } from './modules/init';
 import { normalizeChampionName } from './modules/cleanup';
@@ -107,11 +107,11 @@ function sendChampionData(championName: string, message: Message): Promise<void 
     .then((embed: MessageEmbed) => {
       return message.reply(embed)
         .catch((err) => {
-          return console.error('when sending embedded message for champion data', err);
+          return console.error('When sending embedded message for champion data', err);
         });
     })
     .catch((err) => {
-      return console.error('when getting the embedded message for champion data', err)
+      return console.error('When getting the embedded message for champion data', err)
     });
 }
 
@@ -120,11 +120,11 @@ function sendSkinData(skinName: string, message: Message): Promise<void | Messag
     .then((embed: MessageEmbed) => {
       return message.reply(embed)
       .catch((err) => {
-        return console.error('when sending embedded message for skin data', err);
+        return console.error('When sending embedded message for skin data', err);
       });
     })
     .catch((err) => {
-      return console.error('when getting the embedded message for skin data', err)
+      return console.error('When getting the embedded message for skin data', err)
     });
 }
 
@@ -133,11 +133,11 @@ function sendChampionSkinData(championName: string, skinName: string, message: M
   .then((embed: MessageEmbed) => {
     return message.reply(embed)
       .catch((err) => {
-        return console.error('when sending embedded message for champion data', err);
+        return console.error('When sending embedded message for champion data', err);
       });
   })
     .catch((err) => {
-      return console.error('when getting the embedded message for champion data', err)
+      return console.error('When getting the embedded message for champion data', err)
     });
 }
 
@@ -146,24 +146,24 @@ function sendChampionSkinChromaData(championName: string, skinName: string, chro
   .then((embed: MessageEmbed) => {
     return message.reply(embed)
       .catch((err) => {
-        return console.error('when sending embedded message for champion data', err);
+        return console.error('When sending embedded message for champion data', err);
       });
   })
     .catch((err) => {
-      return console.error('when getting the embedded message for champion data', err)
+      return console.error('When getting the embedded message for champion data', err)
     });
 }
 
 function sendItemData(itemName: string, message: Message): Promise<void | Message> {
-  return getItem(itemName)
+  return fetchItem(itemName)
     .then((embed: MessageEmbed) => {
       return message.reply(embed)
         .catch((err) => {
-          return console.error('when sending embedded message for item data', err);
+          return console.error('When sending embedded message for item data', err);
         });
     })
     .catch((err) => {
-      return console.error('when getting the embedded message for item data', err)
+      return console.error('When getting the embedded message for item data', err)
     });
 }
 
@@ -187,7 +187,11 @@ function sendHelpMessage(): MessageEmbed {
       Returns the specified champion's ability information, including any details or notes by the developers.
 
       - !elder *[skin name]* *[champion name]*
-      Returns a list of all of the released skins for the specified champion.`
+      Returns a list of all of the released skins for the specified champion.
+      
+      - !elder *[item name]* 
+      Returns the general item info such as including description, passives, stats, and shop price.`
+
     }],
     url: 'https://github.com/myumi/elder-drake'
   });
