@@ -11,6 +11,7 @@ skinToChampionMap.set('prestige', [])
 
 export function init() {
   setChampionNamesAndSkinNamesAndChromaNames();
+  setItemNames();
 }
 
 async function setChampionNamesAndSkinNamesAndChromaNames() {
