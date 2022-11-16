@@ -22,7 +22,7 @@ export async function makeItemAPICall(itemName: string): Promise<any> {
   }
 
 // Gets item and sends message to Discord
-export async function fetchItem(itemName: string): Promise<any> {
+export async function getItem(itemName: string): Promise<any> {
     return await makeItemAPICall(itemName)
         .then((res) => {
             return constructItemEmbedMessage(res);

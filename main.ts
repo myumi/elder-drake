@@ -162,7 +162,7 @@ function sendItemData(itemName: string, message: Message): Promise<void | Messag
           return console.error('when sending embedded message for item data', err);
         });
     })
-    .catch((err) => {
+    .catch((err: Error) => {
       return console.error('when getting the embedded message for item data', err)
     });
 }
