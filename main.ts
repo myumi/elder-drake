@@ -1,4 +1,4 @@
-import { Client, Message, MessageAdditions, MessageEmbed, MessageOptions } from 'discord.js';
+import { Client, Message, MessageEmbed } from 'discord.js';
 import { prefix } from './modules/constants';
 import { getChampion } from './features/champions';
 import { getChampionSkin, getSkin } from './features/skins';
