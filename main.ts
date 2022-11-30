@@ -1,11 +1,14 @@
-import { Client, Message, MessageAdditions, MessageEmbed, MessageOptions } from 'discord.js';
+import { Client, Message, MessageEmbed } from 'discord.js';
 import { prefix } from './modules/constants';
 import { getChampion } from './features/champions';
 import { getChampionSkin, getSkin } from './features/skins';
+import { getItem } from './features/items';
 import { constructEmbedMessage } from './modules/messages/normalMessageGeneration';
-import { championNames, chromaNames, setChampionNamesAndSkinNamesAndChromaNames, skinNames } from './modules/init';
+import { championNames, chromaNames, init, skinNames, itemNames } from './modules/init';
 import { normalizeChampionName } from './modules/cleanup';
 import { constructErrorMessage } from './modules/messages/errorMessageGeneration';
+import { normalizeItemName } from './modules/cleanup';
+
 const championNickNames: Array<string> = ['mundo', 'nunu', 'jarvan', 'j4', 'kogmaw', 'reksai', 'tf', 'asol', 'yi', 
                                           'akechi', 'mord', 'rhaast', 'powder', 'best boy', 'best girl', 'violet', 
                                           'cait', 'cupcake', 'ez'];
@@ -13,7 +16,7 @@ const championNickNames: Array<string> = ['mundo', 'nunu', 'jarvan', 'j4', 'kogm
 const client = new Client();
 
 client.on('ready', () => {
-  setChampionNamesAndSkinNamesAndChromaNames();
+  init();
   console.log('The elder drake is awake!');
 });
 
@@ -52,9 +55,15 @@ function sendProperMessageResponse(message: Message)  {
     content += ` ${nickname}`;
   }
 
+  const itemNickname = normalizeItemName(content);
+  if (itemNickname) {
+    content += ` ${itemNickname}`;
+  }
+
   const championName = getIncludedName(content, championNames);
   const skinName = getIncludedName(content, skinNames);
   const chromaName = getIncludedName(content, chromaNames);
+  const itemName = getIncludedName(content, itemNames)
 
   if (chromaName && skinName && championName) {
     return sendChampionSkinChromaData(championName, skinName, chromaName, message);
@@ -67,6 +76,9 @@ function sendProperMessageResponse(message: Message)  {
   }
   else if (skinName) {
     return sendSkinData(skinName, message);
+  }
+  else if (itemName) {
+    return sendItemData(itemName, message);
   }
   else {
     return sendErrorMessage(message);
@@ -95,11 +107,11 @@ function sendChampionData(championName: string, message: Message): Promise<void 
     .then((embed: MessageEmbed) => {
       return message.reply(embed)
         .catch((err) => {
-          return console.error('when sending embedded message for champion data', err);
+          return console.error('When sending embedded message for champion data', err);
         });
     })
     .catch((err) => {
-      return console.error('when getting the embedded message for champion data', err)
+      return console.error('When getting the embedded message for champion data', err)
     });
 }
 
@@ -108,11 +120,11 @@ function sendSkinData(skinName: string, message: Message): Promise<void | Messag
     .then((embed: MessageEmbed) => {
       return message.reply(embed)
       .catch((err) => {
-        return console.error('when sending embedded message for skin data', err);
+        return console.error('When sending embedded message for skin data', err);
       });
     })
     .catch((err) => {
-      return console.error('when getting the embedded message for skin data', err)
+      return console.error('When getting the embedded message for skin data', err)
     });
 }
 
@@ -121,11 +133,11 @@ function sendChampionSkinData(championName: string, skinName: string, message: M
   .then((embed: MessageEmbed) => {
     return message.reply(embed)
       .catch((err) => {
-        return console.error('when sending embedded message for champion data', err);
+        return console.error('When sending embedded message for champion data', err);
       });
   })
     .catch((err) => {
-      return console.error('when getting the embedded message for champion data', err)
+      return console.error('When getting the embedded message for champion data', err)
     });
 }
 
@@ -134,11 +146,24 @@ function sendChampionSkinChromaData(championName: string, skinName: string, chro
   .then((embed: MessageEmbed) => {
     return message.reply(embed)
       .catch((err) => {
-        return console.error('when sending embedded message for champion data', err);
+        return console.error('When sending embedded message for champion data', err);
       });
   })
     .catch((err) => {
       return console.error('when getting the embedded message for champion data', err)
+    });
+}
+
+function sendItemData(itemName: string, message: Message): Promise<void | Message> {
+  return getItem(itemName)
+    .then((embed: MessageEmbed) => {
+      return message.reply(embed)
+        .catch((err) => {
+          return console.error('when sending embedded message for item data', err);
+        });
+    })
+    .catch((err: Error) => {
+      return console.error('when getting the embedded message for item data', err)
     });
 }
 
@@ -162,7 +187,11 @@ function sendHelpMessage(): MessageEmbed {
       Returns the specified champion's ability information, including any details or notes by the developers.
 
       - !elder *[skin name]* *[champion name]*
-      Returns a list of all of the released skins for the specified champion.`
+      Returns a list of all of the released skins for the specified champion.
+      
+      - !elder *[item name]* 
+      Returns the general item info such as including description, passives, stats, and shop price.`
+
     }],
     url: 'https://github.com/myumi/elder-drake'
   });

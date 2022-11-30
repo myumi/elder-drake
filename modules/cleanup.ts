@@ -96,3 +96,62 @@ export function normalizeNameString(name: string): string {
   
   return name;
 }
+
+// Simplify any name by lowercasing and removing apostrophes
+export function simplifyName(itemName: string) {
+  let simpleItemName = itemName.toLowerCase();
+  return simpleItemName.replace(/'/,'');
+}
+
+// Normalize stat name for printing
+export function normalizeStatName(statName: string): string {
+  let normalizedStat = statName.split(/(?=[A-Z])/).join(" ");
+  normalizedStat = (capitalizeWordsInString(normalizedStat));
+  return normalizedStat;
+}
+
+// Normalize item name based on input
+export function normalizeItemName(itemName: string): string {
+  itemName = simplifyName(itemName);
+  const nicknames: any = {
+      'seal': 'Dark Seal',
+      'red jungle': 'Emberknife',
+      'blue jungle': 'Hailblade',
+      'tear': 'Tear of the Goddess',
+      'red ward': 'Control Ward',
+      'blue trinket': 'Farsight Alteration',
+      'farsight trinket': 'Farsight Alteration',
+      'red trinket': 'Oracle Lens',
+      'yellow trinket': 'Stealth Ward',
+      'sweeper': 'Oracle Lens',
+      'sweeping lens': 'Oracle Lens',
+      'herald': 'Eye of the Herald',
+      'dematerializer': 'Minion Dematerializer',
+      'magic boots': 'Slightly Magical Boots',
+      'buscuit': 'Total Biscuit of Everlasting Will',
+      'swifties': 'Boots of Swiftness',
+      'lucidity boots': 'Ionian Boots of Lucidity',
+      'boots of lucidity': 'Ionian Boots of Lucidity',
+      'merc treads': 'Mercurys Treads',
+      'mercury treads': 'Mercurys Treads',
+      'boots5': 'Mobility Boots',
+      'mobi boots': 'Mobility Boots',
+      'steelcaps': 'Plated Steelcaps',
+      'sorc treads': 'Sorcerers Treads',
+      'bf sword': 'B.F. Sword',
+      'agility cloak': 'Cloak of Agility',
+      'large rod': 'Needelessly Large Rod',
+      'magic mantle': 'Null-Magic Mantle',
+      'aegis': 'Aegis of the Legion',
+      'cinder': 'Bamis Cinder'
+
+          //TO BE CONTINUED
+
+    }
+
+    if (nicknames.hasOwnProperty(itemName)) {
+      return simplifyName(nicknames[itemName]);
+    }
+  
+    return itemName;
+}
